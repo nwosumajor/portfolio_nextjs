@@ -7,9 +7,11 @@ const withMDX = mdx({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "export", // 1. Tells Next.js to build a static HTML export into the 'out' directory
   pageExtensions: ["ts", "tsx", "md", "mdx"],
   transpilePackages: ["next-mdx-remote"],
   images: {
+    unoptimized: true, // 2. Required for static exports; prevents build failures on S3
     remotePatterns: [
       {
         protocol: "https",
