@@ -1,0 +1,70 @@
+pipeline {
+    agent any
+
+    environment {
+        // This is the environment variable your deploy.py script looks for
+        AWS_S3_BUCKET_NAME = 'majorbucketportfolio'
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                // Pulls the latest code from your GitHub repository
+                checkout scm
+            }
+        }
+
+        stage('Install Node Dependencies') {
+            steps {
+                echo 'Installing npm dependencies...'
+                sh 'npm install'
+            }
+        }
+
+        stage('Build Next.js App') {
+            steps {
+                echo 'Building static Next.js export...'
+                // This creates the 'out' folder
+                sh 'npm run build'
+            }
+        }
+
+        stage('Prepare Python Environment') {
+            steps {
+                echo 'Setting up Python virtual environment and installing boto3...'
+                sh '''
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install -r requirements.txt
+                '''
+            }
+        }
+
+        stage('Deploy to AWS S3') {
+            steps {
+                echo 'Executing deploy.py script...'
+                // Securely injects AWS credentials from Jenkins into the environment
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-capstone-creds', 
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                ]]) {
+                    sh '''
+                        . venv/bin/activate
+                        python3 deploy.py
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'SUCCESS: Your portfolio has been successfully deployed to AWS!'
+        }
+        failure {
+            echo 'FAILURE: The pipeline failed. Please check the Jenkins console output for details.'
+        }
+    }
+}
