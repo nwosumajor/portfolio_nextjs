@@ -48,7 +48,10 @@ def deploy_to_s3():
                     local_path, 
                     BUCKET_NAME, 
                     s3_key,
-                    ExtraArgs={'ContentType': content_type}
+                    ExtraArgs={
+                        'ContentType': content_type,
+                        'ACL': 'public-read' # This is required by the instructions
+                    }
                 )
                 
         print("\nDeployment completed successfully!")
