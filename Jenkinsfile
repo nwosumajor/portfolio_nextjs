@@ -6,8 +6,12 @@ pipeline {
     }
 
     stages {
-        stage('Install Node Dependencies') {
+        stagestage('Install Node Dependencies') {
             steps {
+                echo 'Cleaning up old or corrupted dependencies...'
+                sh 'rm -rf node_modules package-lock.json'
+                
+                echo 'Installing npm dependencies...'
                 sh 'npm install'
             }
         }
