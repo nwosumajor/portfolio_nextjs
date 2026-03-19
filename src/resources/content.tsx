@@ -15,7 +15,7 @@ const person: Person = {
 const newsletter: Newsletter = {
   display: true,
   title: <>Subscribe to {person.firstName}'s Newsletter</>,
-  description: <>A weekly newsletter on cloud architecture, DevOps automation, and digital security.</>,
+  description: <> Hi, I'm Ayodele - Welcome to my Automated DevOps Capstone!, A weekly newsletter on cloud architecture, DevOps automation, and digital security.</>,
 };
 
 const social: Social = [
