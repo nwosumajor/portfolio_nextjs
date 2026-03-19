@@ -6,7 +6,7 @@ pipeline {
     }
 
     stages {
-        stagestage('Install Node Dependencies') {
+        stage('Install Node Dependencies') {
             steps {
                 echo 'Cleaning up old or corrupted dependencies...'
                 sh 'rm -rf node_modules package-lock.json'
@@ -18,6 +18,7 @@ pipeline {
 
         stage('Build Next.js App') {
             steps {
+                echo 'Building Next.js app...'
                 sh 'npm run build'
             }
         }
